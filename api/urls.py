@@ -13,7 +13,7 @@ urlpatterns = [
     path('usuarios/<int:pk>/', UsuarioDetailView.as_view(), name='usuario-detail'),
 
     # Rutas para Plantas
-    path('plantas/', PlantaListView.as_view(), name='planta-list'),
+    path('', PlantaListView.as_view(), name='planta-list'),
     path('plantas/<int:pk>/', PlantaDetailView.as_view(), name='planta-detail'),
 
     # Rutas para Carritos
