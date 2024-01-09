@@ -9,9 +9,9 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-from pathlib import Path;
 import os
 import dj_database_url
+from pathlib import Path
 
 
 
@@ -19,7 +19,7 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuåitable for production
+# Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -111,13 +111,37 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ventaPlantas.wsgi.application'
 
 
+# Database
+# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+
 DATABASES = {
-    'default': dj_database_url.config(
-    # Feel free to alter this value to suit your needs.
-    default='mysql://root:@localhost:3306/elJardinDeNaru',
-    conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'railway',
+        'USER': 'root',
+        'PASSWORD': '-6Fcg26FH5Abbae3cea621dcD5hf1h4h',
+        'HOST': 'viaduct.proxy.rlwy.net',
+        'PORT': '54740',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
+        'TEST': {
+            'CHARSET': 'utf8mb4',
+            'COLLATION': 'utf8mb4_general_ci',
+        },
+    }
 }
+
+# Database
+# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#     # Feel free to alter this value to suit your needs.
+#     default='mysql://root:@localhost:3306/elJardinDeNaru',
+#     conn_max_age=600
+#     )
+# }
 
 
 
@@ -167,8 +191,6 @@ USE_TZ = True
 # This setting tells Django at which URL static files are going to be served to the user.
 # Here, they well be accessible at your-domain.onrender.com/static/...
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Following settings only make sense on production and may break development environments.
 if not DEBUG:
