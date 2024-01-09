@@ -9,9 +9,9 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import os
-import dj_database_url
-from pathlib import Path
+import os;
+import dj_database_url;
+from pathlib import Path;
 
 
 
@@ -19,7 +19,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
+# Quick-start development settings - unsuåitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -110,30 +110,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ventaPlantas.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'elJardinDeNaru',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#         'OPTIONS': {
-#             'charset': 'utf8mb4',
-#         },
-#         'TEST': {
-#             'CHARSET': 'utf8mb4',
-#             'COLLATION': 'utf8mb4_general_ci',
-#         },
-#     }
-# }
-
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
     'default': dj_database_url.config(
