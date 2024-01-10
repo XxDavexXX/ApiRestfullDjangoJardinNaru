@@ -9,8 +9,6 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import os
-import dj_database_url
 from pathlib import Path
 
 
@@ -29,7 +27,7 @@ SECRET_KEY = 'django-insecure-m=_rrmsxa-&we5oe2*$+#o4(@=b^pd7c8!6y=nd)=$f4j6-k14
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 # RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 # if RENDER_EXTERNAL_HOSTNAME:
@@ -50,13 +48,12 @@ INSTALLED_APPS = [
     'api'
 ]
 
-# CSRF_TRUSTED_ORIGINS = ['https://template-django-production-6e65.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://template-django-production-6e65.up.railway.app']
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -92,6 +89,7 @@ CORS_ALLOW_HEADERS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+
 ROOT_URLCONF = 'ventaPlantas.urls'
 
 TEMPLATES = [
@@ -116,14 +114,33 @@ WSGI_APPLICATION = 'ventaPlantas.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'elJardinDeNaru',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'charset': 'utf8mb4',
+#         },
+#         'TEST': {
+#             'CHARSET': 'utf8mb4',
+#             'COLLATION': 'utf8mb4_general_ci',
+#         },
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'railway',
         'USER': 'root',
-        'PASSWORD': '-6Fcg26FH5Abbae3cea621dcD5hf1h4h',
-        'HOST': 'viaduct.proxy.rlwy.net',
-        'PORT': '54740',
+        'PASSWORD': 'EcbHHDDeF4chh3Fb5B5gaA14eedF3cff',
+        'HOST': 'monorail.proxy.rlwy.net',
+        'PORT': '21381',
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
@@ -193,7 +210,6 @@ USE_TZ = True
 # This setting tells Django at which URL static files are going to be served to the user.
 # Here, they well be accessible at your-domain.onrender.com/static/...
 STATIC_URL = 'static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'school/static'),)
 # Following settings only make sense on production and may break development environments.
 # if not DEBUG:
 #     # Tell Django to copy statics to the `staticfiles` directory
