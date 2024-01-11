@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
+import dj_database_url
 from pathlib import Path
 
 
@@ -22,17 +24,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m=_rrmsxa-&we5oe2*$+#o4(@=b^pd7c8!6y=nd)=$f4j6-k14'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = 'RENDER' not in os.environ
 
-ALLOWED_HOSTS = []
+# https://docs.djangoproject.com/en/3.0/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = ['*']
 
-# RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-# if RENDER_EXTERNAL_HOSTNAME:
-#     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:   
+     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition
@@ -59,6 +63,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -115,16 +120,12 @@ WSGI_APPLICATION = 'ventaPlantas.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'elJardinDeNaru',
-        'USER': 'fl0user',
-        'PASSWORD': 'niC63GKwTIeJ',
-        'HOST': 'ep-rapid-flower-76853976.us-east-2.aws.neon.fl0.io',
-        'PORT': '5432',
+    'default': dj_database_url.config(        
+            # Feel free to alter this value to suit your needs.        
+            default='postgres://jardindenaru_user:Xm9gW4mXKJju2iXbAY6T0dIaPRPI7tt4@dpg-cmecm1f109ks73c40210-a.oregon-postgres.render.com/jardindenaru',        
+            conn_max_age=600    
+         )
     }
-}
-
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -184,17 +185,19 @@ USE_TZ = True
 
 # This setting tells Django at which URL static files are going to be served to the user.
 # Here, they well be accessible at your-domain.onrender.com/static/...
-STATIC_URL = 'static/'
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
+
+# This setting tells Django at which URL static files are going to be served to the user.
+# Here, they well be accessible at your-domain.onrender.com/static/...
+STATIC_URL = '/static/'
 # Following settings only make sense on production and may break development environments.
-# if not DEBUG:
-#     # Tell Django to copy statics to the staticfiles directory
-#     # in your application directory on Render.
-#     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-#     # Turn on WhiteNoise storage backend that takes care of compressing static files
-#     # and creating unique names for each version so they can safely be cached forever.
-#     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
+if not DEBUG:    # Tell Django to copy statics to the `staticfiles` directory
+    # in your application directory on Render.
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    # Turn on WhiteNoise storage backend that takes care of compressing static files
+    # and creating unique names for each version so they can safely be cached forever.
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
