@@ -17,6 +17,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-m=_rrmsxa-&we5oe2*$+#o4(@=b^pd7c8!6y=nd)=$f4j6-k14
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 # RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 # if RENDER_EXTERNAL_HOSTNAME:
@@ -48,7 +49,7 @@ INSTALLED_APPS = [
     'api'
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://template-django-production-6e65.up.railway.app']
+# CSRF_TRUSTED_ORIGINS = ['https://template-django-production-6e65.up.railway.app']
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -89,7 +90,6 @@ CORS_ALLOW_HEADERS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-
 ROOT_URLCONF = 'ventaPlantas.urls'
 
 TEMPLATES = [
@@ -114,33 +114,14 @@ WSGI_APPLICATION = 'ventaPlantas.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'elJardinDeNaru',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#         'OPTIONS': {
-#             'charset': 'utf8mb4',
-#         },
-#         'TEST': {
-#             'CHARSET': 'utf8mb4',
-#             'COLLATION': 'utf8mb4_general_ci',
-#         },
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'railway',
+        'NAME': 'elJardinDeNaru',
         'USER': 'root',
-        'PASSWORD': 'EcbHHDDeF4chh3Fb5B5gaA14eedF3cff',
-        'HOST': 'monorail.proxy.rlwy.net',
-        'PORT': '21381',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
@@ -150,7 +131,6 @@ DATABASES = {
         },
     }
 }
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -212,7 +192,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 # Following settings only make sense on production and may break development environments.
 # if not DEBUG:
-#     # Tell Django to copy statics to the `staticfiles` directory
+#     # Tell Django to copy statics to the staticfiles directory
 #     # in your application directory on Render.
 #     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 

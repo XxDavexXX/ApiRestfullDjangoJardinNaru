@@ -1,1 +1,0 @@
-web: gunicorn ventaPlantas.wsgi --log-file -
