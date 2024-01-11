@@ -116,21 +116,16 @@ WSGI_APPLICATION = 'ventaPlantas.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'elJardinDeNaru',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        },
-        'TEST': {
-            'CHARSET': 'utf8mb4',
-            'COLLATION': 'utf8mb4_general_ci',
-        },
+        'USER': 'fl0user',
+        'PASSWORD': 'niC63GKwTIeJ',
+        'HOST': 'ep-rapid-flower-76853976.us-east-2.aws.neon.fl0.io',
+        'PORT': '5432',
     }
 }
+
+
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
