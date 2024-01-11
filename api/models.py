@@ -8,6 +8,13 @@ class Usuario(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+
+class TipoPlanta(models.Model):
+    nombre = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nombre
 
 class Planta(models.Model):
     nombre = models.CharField(max_length=255)
@@ -15,7 +22,8 @@ class Planta(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField()
     categoria = models.CharField(max_length=50)
-    imgplanta = models.CharField(max_length=255, default='imgs/img1.png')
+    tipo_planta = models.ForeignKey(TipoPlanta, on_delete=models.CASCADE)
+    imgplanta = models.CharField(max_length=255, default='imgs/planta_img6.jpeg')
 
     def __str__(self):
         return self.nombre
