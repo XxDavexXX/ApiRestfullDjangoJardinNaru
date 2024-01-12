@@ -16,17 +16,22 @@ class TipoPlanta(models.Model):
     def __str__(self):
         return self.nombre
 
+# ...
+
 class Planta(models.Model):
     nombre = models.CharField(max_length=255)
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField()
     categoria = models.CharField(max_length=50)
-    tipo_planta = models.ForeignKey(TipoPlanta, on_delete=models.CASCADE)
+    tipo_planta_id = models.ForeignKey(TipoPlanta, on_delete=models.CASCADE)
     imgplanta = models.CharField(max_length=255, default='imgs/planta_img6.jpeg')
 
     def __str__(self):
         return self.nombre
+
+# ...
+
 
 class Carrito(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
