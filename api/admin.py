@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Usuario, Planta, Carrito, ElementoCarrito, HistorialCompra
+from .models import Usuario, Planta, Carrito, ElementoCarrito, HistorialCompra, TipoPlanta
 
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
@@ -8,6 +8,10 @@ class UsuarioAdmin(admin.ModelAdmin):
 @admin.register(Planta)
 class PlantaAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'precio', 'stock', 'categoria')
+
+@admin.register(TipoPlanta)
+class TipoPlantaAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'estado')
 
 @admin.register(Carrito)
 class CarritoAdmin(admin.ModelAdmin):
