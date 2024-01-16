@@ -118,6 +118,19 @@ class PlantaListByPriceRangeView(generics.ListCreateAPIView):
             queryset = queryset.filter(precio__lte=max_price)
 
         return queryset
+    
+class PlantaListViewByTipoPlanta(generics.ListCreateAPIView):
+    serializer_class = PlantaSerializer
+
+    def get_queryset(self):
+        queryset = Planta.objects.select_related('tipo_planta_id').all()
+        tipos_seleccionados = self.request.GET.getlist('tipo_planta_id')
+
+        if tipos_seleccionados:
+            # Filtra las plantas por los tipos seleccionados
+            queryset = queryset.filter(tipo_planta_id__id__in=tipos_seleccionados)
+
+        return queryset
 
 # Vistas para TipoPlanta
 class TipoPlantaListView(generics.ListCreateAPIView):
