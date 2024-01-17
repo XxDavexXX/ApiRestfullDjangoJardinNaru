@@ -5,7 +5,7 @@ from .views import (
     PlantaListView, PlantaDetailView, PlantaListOrderPriceMasMenosView
     ,PlantaListOrderPriceMenosMasView,PlantaListOrderNombreAtoZ
     , PlantaListOrderNombreZtoA, PlantaListOrderRandomId,PlantaListByPriceRangeView,
-    PlantaListViewByTipoPlanta,
+    PlantaListViewByTipoPlanta,PlantaListByFiltersView,
 
     CarritoListView, CarritoDetailView,
 
@@ -31,6 +31,8 @@ urlpatterns = [
     path('plantas-order-relevancia', PlantaListOrderRandomId.as_view(), name='planta-orderins-relevancia'),
     path('plantas-by-price-range/', PlantaListByPriceRangeView.as_view(), name='planta-list-by-price-range'),
     path('plantas-by-tipo/', PlantaListViewByTipoPlanta.as_view(), name='planta-list-by-tipo'),
+    path('plantas-by-filters/', PlantaListByFiltersView.as_view(), name='planta-list-by-filters'),
+
 
     # Rutas para Carritos
     path('carritos/', CarritoListView.as_view(), name='carrito-list'),

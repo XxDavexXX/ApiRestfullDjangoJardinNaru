@@ -167,3 +167,54 @@ class HistorialCompraListView(generics.ListCreateAPIView):
 class HistorialCompraDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HistorialCompra.objects.all()
     serializer_class = HistorialCompraSerializer
+
+
+# Filtrando todo de una 
+    
+class PlantaListByFiltersView(generics.ListCreateAPIView):
+    serializer_class = PlantaSerializer
+
+    def get_queryset(self):
+        # Obtener parámetros de la URL
+        ordering = self.request.query_params.get('ordering', 'nombre')
+        min_price = self.request.query_params.get('min_price', None)
+        max_price = self.request.query_params.get('max_price', None)
+        tipos_seleccionados = self.request.GET.getlist('tipo_planta_id')
+
+        # Validar que los parámetros sean números
+        try:
+            min_price = float(min_price) if min_price else None
+            max_price = float(max_price) if max_price else None
+        except ValueError:
+            return Planta.objects.none()
+
+        # Filtrar las plantas por rango de precios y tipos seleccionados
+        queryset = Planta.objects.select_related('tipo_planta_id').all()
+
+        if min_price is not None:
+            queryset = queryset.filter(precio__gte=min_price)
+
+        if max_price is not None:
+            queryset = queryset.filter(precio__lte=max_price)
+
+        if tipos_seleccionados:
+            queryset = queryset.filter(tipo_planta_id__id__in=tipos_seleccionados)
+
+        # Aplicar ordenamiento
+        ordering_fields = {
+            'precio_menos_mas': 'precio',
+            'precio_mas_menos': '-precio',
+            'random_id': '?',
+            'nombre_a_z': 'nombre',
+            'nombre_z_a': '-nombre',
+        }
+
+        ordering = ordering_fields.get(ordering, 'nombre')
+
+        if ordering.startswith('-'):
+            queryset = queryset.order_by(ordering)
+        else:
+            queryset = queryset.order_by(ordering)
+
+        return queryset
+
