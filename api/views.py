@@ -1,18 +1,216 @@
-from rest_framework import generics
-from .models import Usuario, Planta, Carrito, ElementoCarrito, HistorialCompra, TipoPlanta
+from rest_framework import generics, status
+from django.shortcuts import get_object_or_404, render
+from django.http import JsonResponse, Http404
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+from rest_framework.views import APIView
+
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.response import Response
+from .models import Usuario, Planta, Carrito, ElementoCarrito, HistorialCompra, TipoPlanta, Maceta, FotosPlantaMaceta
 from .serializers import (
-    UsuarioSerializer, PlantaSerializer, CarritoSerializer,
-    ElementoCarritoSerializer, HistorialCompraSerializer, TipoPlantaSerializer
+    UsuarioSerializer, PlantaSerializer, CarritoSerializer, FotosPlantaMacetaSerializer, UsuariListSerializer,
+    ElementoCarritoSerializer, HistorialCompraSerializer, TipoPlantaSerializer, MacetaSerializer, UsuarioUpdateSerializer, UsuarioUpdateSerializerTelefono, UsuarioUpdateSerializerNombre
 )
+import json
+
+@csrf_exempt
+def registrar_usuario(request):
+    if request.method == 'POST':
+        # Obtener datos del cuerpo de la solicitud (asumiendo que los datos están en formato JSON)
+        try:
+            data = json.loads(request.body)
+            uid = data.get('uid')
+            nombre = data.get('nombre')
+            email = data.get('email')
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Error al decodificar JSON'}, status=400)
+
+        # Verificar que los datos requeridos estén presentes
+        if not (uid and nombre and email):
+            return JsonResponse({'error': 'Se requieren uid, nombre y email'}, status=400)
+
+        # Crear un nuevo usuario
+        try:
+            # Aquí deberías crear un nuevo usuario en tu modelo de Usuario en lugar de User
+            usuario = Usuario.objects.create(uid=uid, nombre=nombre, email=email)
+            usuario.save()
+            return JsonResponse({'message': 'Usuario registrado exitosamente'})
+        except Exception as e:
+            return JsonResponse({'error': f'Error al registrar usuario: {str(e)}'}, status=500)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+import json
+
+@csrf_exempt
+def register_with_email_password(request):
+    if request.method == 'POST':
+        # Obtener datos del cuerpo de la solicitud (asumiendo que los datos están en formato JSON)
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            password = data.get('password')
+            uid = data.get('uid')
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Error al decodificar JSON'}, status=400)
+
+        # Verificar que los datos requeridos estén presentes
+        if not (email and password and uid):
+            return JsonResponse({'error': 'Se requieren email, password y uid'}, status=400)
+
+        # Verificar si el usuario ya está registrado
+        if Usuario.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'El usuario ya está registrado'}, status=400)
+
+        # Crear un nuevo usuario
+        usuario = Usuario.objects.create(
+            email=email,
+            contrasena=password,  # Hashear la contraseña antes de guardarla
+            uid=uid
+        )
+
+        return JsonResponse({'message': 'Usuario registrado exitosamente'})
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+@csrf_exempt
+def verificar_email(request):
+    if request.method == 'GET':
+        email = request.GET.get('email')
+
+        if not email:
+            return JsonResponse({'error': 'Se requiere el parámetro "email"'}, status=400)
+
+        try:
+            usuario = Usuario.objects.get(email=email)
+            return JsonResponse({'message': 'El correo electrónico ya está registrado'})
+        except Usuario.DoesNotExist:
+            return JsonResponse({'message': f'El correo electrónico no está registrado'})
+
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+
+
+class UsuarioByUidAPIView(generics.RetrieveAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    lookup_field = 'uid'
+
+    def get_object(self):
+        uid = self.kwargs.get(self.lookup_field)
+        queryset = self.get_queryset()
+        try:
+            obj = queryset.get(uid=uid)
+            return obj
+        except Usuario.DoesNotExist:
+            raise Http404("Usuario no encontrado")
+        
+class UsuarioDetailView(APIView):
+    def put(self, request, uid, format=None):
+        usuario = self.get_object(uid)
+        serializer = UsuarioUpdateSerializer(usuario, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_object(self, uid):
+        try:
+            return Usuario.objects.get(uid=uid)
+        except Usuario.DoesNotExist:
+            raise Http404
+
+class UsuarioDetailViewTelefono(APIView):
+    def put(self, request, uid, format=None):
+        usuario = self.get_object(uid)
+        serializer = UsuarioUpdateSerializerTelefono(usuario, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_object(self, uid):
+        try:
+            return Usuario.objects.get(uid=uid)
+        except Usuario.DoesNotExist:
+            raise Http404
+
+class UsuarioDetailViewNombre(APIView):
+    def put(self, request, uid, format=None):
+        usuario = self.get_object(uid)
+        serializer = UsuarioUpdateSerializerNombre(usuario, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_object(self, uid):
+        try:
+            return Usuario.objects.get(uid=uid)
+        except Usuario.DoesNotExist:
+            raise Http404
+
+
+
+
+
+class MacetaListView(generics.ListCreateAPIView):
+    queryset = Maceta.objects.all()
+    serializer_class = MacetaSerializer
+
+class MacetaDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Maceta.objects.all()
+    serializer_class = MacetaSerializer
+
+
+class FotosPlantaMacetaListView(generics.ListCreateAPIView):
+    queryset = FotosPlantaMaceta.objects.all()
+    serializer_class = FotosPlantaMacetaSerializer
+
+    
+class FotosPlantaMacetaDetailView(generics.ListAPIView):
+    serializer_class = FotosPlantaMacetaSerializer
+
+    def get_queryset(self):
+        planta_id = self.kwargs['planta_id']
+        return FotosPlantaMaceta.objects.filter(planta__id=planta_id)
+
+class FotosPlantaMacetaDetailByIdView(generics.RetrieveAPIView):
+    serializer_class = FotosPlantaMacetaSerializer
+
+    def get_queryset(self):
+        planta_id = self.kwargs['planta_id']
+        return FotosPlantaMaceta.objects.filter(planta__id=planta_id)
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        id = self.kwargs['id']
+        return queryset.get(id=id)
+
+
+class PlantaDetailViewCategoria(generics.ListCreateAPIView):
+    serializer_class = PlantaSerializer
+    lookup_url_kwarg = 'categoria'
+
+    def get_queryset(self):
+        categoria = self.kwargs[self.lookup_url_kwarg]
+        queryset = Planta.objects.filter(categoria=categoria)
+        return queryset
+
 
 # Vistas para Usuarios
 class UsuarioListView(generics.ListCreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
-class UsuarioDetailView(generics.RetrieveUpdateDestroyAPIView):
+class UsuarioDetailIdView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    serializer_class = UsuariListSerializer
 
 # Vistas para Plantas
 # class PlantaListView(generics.ListCreateAPIView):
@@ -25,6 +223,14 @@ class PlantaListView(generics.ListCreateAPIView):
     serializer_class = PlantaSerializer
 
 
+class PlantaDetailViewWithMacetas(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PlantaSerializer
+
+    def get_object(self):
+        pk = self.kwargs['pk']
+        categoria = self.kwargs['categoria']
+        obj = get_object_or_404(Planta, id=pk, categoria=categoria)
+        return obj
 
 class PlantaListOrderPriceMasMenosView(generics.ListCreateAPIView):
     serializer_class = PlantaSerializer
@@ -89,9 +295,20 @@ class PlantaListOrderNombreZtoA(generics.ListCreateAPIView):
 
         return queryset
 
+# class PlantaDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Planta.objects.all()
+#     serializer_class = PlantaSerializer
+    
 class PlantaDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Planta.objects.all()
     serializer_class = PlantaSerializer
+
+    def get_object(self):
+        pk = self.kwargs['pk']
+        categoria = self.kwargs['categoria']
+        obj = get_object_or_404(Planta, id=pk, categoria=categoria)
+        return obj
+
+
 
 class PlantaListByPriceRangeView(generics.ListCreateAPIView):
     serializer_class = PlantaSerializer
@@ -217,4 +434,3 @@ class PlantaListByFiltersView(generics.ListCreateAPIView):
             queryset = queryset.order_by(ordering)
 
         return queryset
-
